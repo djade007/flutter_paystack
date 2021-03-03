@@ -407,7 +407,7 @@ class _HomePageState extends State<HomePage> {
     String accessCode;
     try {
       print("Access code url = $url");
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(Uri.parse(url));
       accessCode = response.body;
       print('Response for access code = $accessCode');
     } catch (e) {
@@ -425,7 +425,7 @@ class _HomePageState extends State<HomePage> {
     _updateStatus(reference, 'Verifying...');
     String url = '$backendUrl/verify/$reference';
     try {
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(Uri.parse(url));
       var body = response.body;
       _updateStatus(reference, body);
     } catch (e) {

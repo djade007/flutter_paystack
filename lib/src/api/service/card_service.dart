@@ -15,7 +15,7 @@ class CardService with BaseApiService implements CardServiceContract {
     var url = '$baseUrl/charge/mobile_charge';
 
     http.Response response =
-        await http.post(url, body: fields, headers: headers);
+        await http.post(Uri.parse(url), body: fields, headers: headers);
     var body = response.body;
 
     var statusCode = response.statusCode;
@@ -40,7 +40,7 @@ class CardService with BaseApiService implements CardServiceContract {
     var url = '$baseUrl/charge/validate';
 
     http.Response response =
-        await http.post(url, body: fields, headers: headers);
+        await http.post(Uri.parse(url), body: fields, headers: headers);
     var body = response.body;
 
     var statusCode = response.statusCode;
@@ -56,7 +56,7 @@ class CardService with BaseApiService implements CardServiceContract {
   Future<TransactionApiResponse> reQueryTransaction(String trans) async {
     var url = '$baseUrl/requery/$trans';
 
-    http.Response response = await http.get(url, headers: headers);
+    http.Response response = await http.get(Uri.parse(url), headers: headers);
     var body = response.body;
     var statusCode = response.statusCode;
     if (statusCode == HttpStatus.ok) {

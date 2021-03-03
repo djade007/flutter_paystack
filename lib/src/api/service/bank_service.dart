@@ -18,7 +18,7 @@ class BankService with BaseApiService implements BankServiceContract {
     var url =
         'https://api.paystack.co/transaction/verify_access_code/$accessCode';
     try {
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(Uri.parse(url));
       Map responseBody = jsonDecode(response.body);
       bool status = responseBody['status'];
       if (response.statusCode == HttpStatus.ok && status) {
@@ -47,7 +47,7 @@ class BankService with BaseApiService implements BankServiceContract {
   Future<TransactionApiResponse> _getChargeFuture(String url,
       {var fields}) async {
     http.Response response =
-        await http.post(url, body: fields, headers: headers);
+        await http.post(Uri.parse(url), body: fields, headers: headers);
     return _getResponseFuture(response);
   }
 
@@ -76,7 +76,7 @@ class BankService with BaseApiService implements BankServiceContract {
     const url =
         'https://api.paystack.co/bank?gateway=emandate&pay_with_bank=true';
     try {
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(Uri.parse(url));
       Map<String, dynamic> body = json.decode(response.body);
       var data = body['data'];
       List<Bank> banks = [];
