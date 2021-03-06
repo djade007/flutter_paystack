@@ -14,14 +14,14 @@ import 'package:http/http.dart' as http;
 
 class BankService with BaseApiService implements BankServiceContract {
   @override
-  Future<String> getTransactionId(String accessCode) async {
+  Future<String?> getTransactionId(String? accessCode) async {
     var url =
         'https://api.paystack.co/transaction/verify_access_code/$accessCode';
     try {
       http.Response response = await http.get(Uri.parse(url));
       Map responseBody = jsonDecode(response.body);
-      bool status = responseBody['status'];
-      if (response.statusCode == HttpStatus.ok && status) {
+      bool? status = responseBody['status'];
+      if (response.statusCode == HttpStatus.ok && status!) {
         return responseBody['data']['id'].toString();
       }
     } catch (e) {}
@@ -30,49 +30,49 @@ class BankService with BaseApiService implements BankServiceContract {
 
   @override
   Future<TransactionApiResponse> chargeBank(
-      BankChargeRequestBody requestBody) async {
+      BankChargeRequestBody? requestBody) async {
     var url =
-        '$baseUrl/bank/charge_account/${requestBody.account.bank.id}/${requestBody.transactionId}';
+        '$baseUrl/bank/charge_account/${requestBody!.account!.bank!.id}/${requestBody.transactionId}';
     return _getChargeFuture(url, fields: requestBody.paramsMap());
   }
 
   @override
   Future<TransactionApiResponse> validateToken(
-      BankChargeRequestBody requestBody, Map<String, String> fields) async {
+      BankChargeRequestBody? requestBody, Map<String, String?> fields) async {
     var url =
-        '$baseUrl/bank/validate_token/${requestBody.account.bank.id}/${requestBody.transactionId}';
+        '$baseUrl/bank/validate_token/${requestBody!.account!.bank!.id}/${requestBody.transactionId}';
     return _getChargeFuture(url, fields: fields);
   }
 
   Future<TransactionApiResponse> _getChargeFuture(String url,
       {var fields}) async {
     http.Response response =
-        await http.post(Uri.parse(url), body: fields, headers: headers);
+        await http.post(Uri.parse(url), body: fields, headers: headers as Map<String, String>?);
     return _getResponseFuture(response);
   }
 
   TransactionApiResponse _getResponseFuture(http.Response response) {
     var body = response.body;
 
-    Map<String, dynamic> responseBody = json.decode(body);
+    Map<String, dynamic>? responseBody = json.decode(body);
 
     var statusCode = response.statusCode;
 
     if (statusCode == HttpStatus.ok) {
-      return TransactionApiResponse.fromMap(responseBody);
+      return TransactionApiResponse.fromMap(responseBody!);
     } else {
       throw new ChargeException(Strings.unKnownResponse);
     }
   }
 
   @override
-  Future<List<Bank>> fetchSupportedBanks() async {
-    return banksMemo.runOnce(() async {
+  Future<List<Bank>?> fetchSupportedBanks() async {
+    return banksMemo!.runOnce(() async {
       return await _fetchSupportedBanks();
     });
   }
 
-  Future<List<Bank>> _fetchSupportedBanks() async {
+  Future<List<Bank>?> _fetchSupportedBanks() async {
     const url =
         'https://api.paystack.co/bank?gateway=emandate&pay_with_bank=true';
     try {
@@ -89,4 +89,4 @@ class BankService with BaseApiService implements BankServiceContract {
   }
 }
 
-var banksMemo = new AsyncMemoizer<List<Bank>>();
+AsyncMemoizer<List<Bank>?>? banksMemo = new AsyncMemoizer<List<Bank>?>();

@@ -3,21 +3,21 @@ import 'package:flutter_paystack/src/models/bank.dart';
 import 'package:flutter_paystack/src/models/charge.dart';
 
 class BankChargeRequestBody extends BaseRequestBody {
-  String _accessCode;
-  BankAccount _account;
-  String _birthday;
-  String _token;
-  String transactionId;
+  String? _accessCode;
+  BankAccount? _account;
+  String? _birthday;
+  String? _token;
+  String? transactionId;
 
   BankChargeRequestBody(Charge charge)
       : this._accessCode = charge.accessCode,
         this._account = charge.account;
 
-  Map<String, String> tokenParams() => {fieldDevice: device, 'token': _token};
+  Map<String, String?> tokenParams() => {fieldDevice: device, 'token': _token};
 
   @override
-  Map<String, String> paramsMap() {
-    var map = {fieldDevice: device, 'account_number': account.number};
+  Map<String, String?> paramsMap() {
+    var map = {fieldDevice: device, 'account_number': account!.number};
     if (_birthday != null) {
       map['birthday'] = _birthday;
     }
@@ -28,7 +28,7 @@ class BankChargeRequestBody extends BaseRequestBody {
 
   set birthday(String value) => _birthday = value;
 
-  BankAccount get account => _account;
+  BankAccount? get account => _account;
 
-  String get accessCode => _accessCode;
+  String? get accessCode => _accessCode;
 }

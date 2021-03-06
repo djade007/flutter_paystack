@@ -6,9 +6,9 @@ import 'package:flutter_paystack/src/widgets/input/otp_field.dart';
 import 'buttons.dart';
 
 class OtpWidget extends StatefulWidget {
-  final String message;
+  final String? message;
 
-  OtpWidget({@required this.message});
+  OtpWidget({required this.message});
 
   @override
   _OtpWidgetState createState() => _OtpWidgetState();
@@ -17,7 +17,7 @@ class OtpWidget extends StatefulWidget {
 class _OtpWidgetState extends BaseState<OtpWidget> {
   var _formKey = new GlobalKey<FormState>();
   var _autoValidate = false;
-  String _otp;
+  String? _otp;
   var heightBox = const SizedBox(height: 20.0);
 
 
@@ -38,7 +38,7 @@ class _OtpWidgetState extends BaseState<OtpWidget> {
                     width: 30.0, package: 'flutter_paystack'),
                 heightBox,
                 new Text(
-                  widget.message,
+                  widget.message!,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontWeight: FontWeight.w500,
@@ -50,7 +50,7 @@ class _OtpWidgetState extends BaseState<OtpWidget> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: new OtpField(
-                    onSaved: (String value) => _otp = value,
+                    onSaved: (String? value) => _otp = value,
                     borderColor: Theme.of(context).accentColor,
                   ),
                 ),
@@ -76,7 +76,7 @@ class _OtpWidgetState extends BaseState<OtpWidget> {
 
   void _validateInputs() {
     FocusScope.of(context).requestFocus(new FocusNode());
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (form.validate()) {
       form.save();
       Navigator.of(context).pop(_otp);

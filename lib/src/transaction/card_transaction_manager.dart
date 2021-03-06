@@ -13,18 +13,18 @@ import 'package:flutter_paystack/src/models/transaction.dart';
 import 'package:flutter_paystack/src/transaction/base_transaction_manager.dart';
 
 class CardTransactionManager extends BaseTransactionManager {
-  ValidateRequestBody validateRequestBody;
-  CardRequestBody chargeRequestBody;
+  late ValidateRequestBody validateRequestBody;
+  late CardRequestBody chargeRequestBody;
   final CardServiceContract service;
   var _invalidDataSentRetries = 0;
 
   CardTransactionManager({
-    @required Charge charge,
-    @required this.service,
-    @required BuildContext context,
-    @required OnTransactionChange<Transaction> onSuccess,
-    @required OnTransactionError<Object, Transaction> onError,
-    @required OnTransactionChange<Transaction> beforeValidate,
+    required Charge charge,
+    required this.service,
+    required BuildContext context,
+    required OnTransactionChange<Transaction> onSuccess,
+    required OnTransactionError<Object, Transaction> onError,
+    required OnTransactionChange<Transaction> beforeValidate,
   }) : super(
             charge: charge,
             context: context,
@@ -40,7 +40,7 @@ class CardTransactionManager extends BaseTransactionManager {
 
   chargeCard() async {
     try {
-      if (charge.card == null || !charge.card.isValid()) {
+      if (charge.card == null || !charge.card!.isValid()) {
         getCardInfoFrmUI(charge.card);
       } else {
         await initiate();
@@ -71,7 +71,7 @@ class CardTransactionManager extends BaseTransactionManager {
   }
 
   _validateChargeOnServer() {
-    Map<String, String> params = validateRequestBody.paramsMap();
+    Map<String, String?> params = validateRequestBody.paramsMap();
     Future<TransactionApiResponse> future = service.validateCharge(params);
     handleServerResponse(future);
   }
@@ -120,7 +120,7 @@ class CardTransactionManager extends BaseTransactionManager {
       }
 
       if (apiResponse.hasValidAuth() &&
-          apiResponse.auth.toLowerCase() == '3DS'.toLowerCase() &&
+          apiResponse.auth!.toLowerCase() == '3DS'.toLowerCase() &&
           apiResponse.hasValidUrl()) {
         notifyBeforeValidate();
         getAuthFrmUI(apiResponse.otpMessage);
@@ -128,8 +128,8 @@ class CardTransactionManager extends BaseTransactionManager {
       }
 
       if (apiResponse.hasValidAuth() &&
-          (apiResponse.auth.toLowerCase() == 'otp' ||
-              apiResponse.auth.toLowerCase() == 'phone') &&
+          (apiResponse.auth!.toLowerCase() == 'otp' ||
+              apiResponse.auth!.toLowerCase() == 'phone') &&
           apiResponse.hasValidOtpMessage()) {
         notifyBeforeValidate();
         validateRequestBody.trans = transaction.id;
@@ -139,7 +139,7 @@ class CardTransactionManager extends BaseTransactionManager {
     }
 
     if (status == '0'.toLowerCase() || status == 'error') {
-      if (apiResponse.message.toLowerCase() ==
+      if (apiResponse.message!.toLowerCase() ==
               'Invalid Data Sent'.toLowerCase() &&
           _invalidDataSentRetries < 0) {
         _invalidDataSentRetries++;
@@ -147,7 +147,7 @@ class CardTransactionManager extends BaseTransactionManager {
         return;
       }
 
-      if (apiResponse.message.toLowerCase() ==
+      if (apiResponse.message!.toLowerCase() ==
           'Access code has expired'.toLowerCase()) {
         notifyProcessingError(ExpiredAccessCodeException(apiResponse.message));
         return;
@@ -166,7 +166,7 @@ class CardTransactionManager extends BaseTransactionManager {
   }
 
   @override
-  void handleOtpInput(String otp, TransactionApiResponse response) {
+  void handleOtpInput(String otp, TransactionApiResponse? response) {
     validateRequestBody.token = otp;
     _validate();
   }

@@ -22,10 +22,10 @@ class BankCheckout extends StatefulWidget {
   final BankServiceContract service;
 
   BankCheckout({
-    @required this.charge,
-    @required this.onResponse,
-    @required this.onProcessingChange,
-    @required this.service,
+    required this.charge,
+    required this.onResponse,
+    required this.onProcessingChange,
+    required this.service,
   });
 
   @override
@@ -34,12 +34,12 @@ class BankCheckout extends StatefulWidget {
 
 class _BankCheckoutState extends BaseCheckoutMethodState<BankCheckout> {
   var _formKey = new GlobalKey<FormState>();
-  AnimationController _controller;
-  Animation<double> _animation;
+  late AnimationController _controller;
+  late Animation<double> _animation;
   var _autoValidate = false;
-  Future<List<Bank>> _futureBanks;
-  Bank _currentBank;
-  BankAccount _account;
+  Future<List<Bank>?>? _futureBanks;
+  Bank? _currentBank;
+  BankAccount? _account;
   var _loading = false;
 
   _BankCheckoutState(OnResponse<CheckoutResponse> onResponse)
@@ -70,7 +70,7 @@ class _BankCheckoutState extends BaseCheckoutMethodState<BankCheckout> {
   Widget buildAnimatedChild() {
     return Container(
       alignment: Alignment.center,
-      child: new FutureBuilder<List<Bank>>(
+      child: new FutureBuilder<List<Bank>?>(
         future: _futureBanks,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           Widget widget;
@@ -155,7 +155,7 @@ class _BankCheckoutState extends BaseCheckoutMethodState<BankCheckout> {
               child: new DropdownButton<Bank>(
                 value: _currentBank,
                 isDense: true,
-                onChanged: (Bank newValue) {
+                onChanged: (Bank? newValue) {
                   setState(() {
                     _currentBank = newValue;
                     _controller.forward();
@@ -164,7 +164,7 @@ class _BankCheckoutState extends BaseCheckoutMethodState<BankCheckout> {
                 items: banks.map((Bank value) {
                   return new DropdownMenuItem<Bank>(
                     value: value,
-                    child: new Text(value.name),
+                    child: new Text(value.name!),
                   );
                 }).toList(),
               ),
@@ -180,7 +180,7 @@ class _BankCheckoutState extends BaseCheckoutMethodState<BankCheckout> {
                           height: 15.0,
                         ),
                         new AccountField(
-                            onSaved: (String value) => _account =
+                            onSaved: (String? value) => _account =
                                 new BankAccount(_currentBank, value)),
                         new SizedBox(
                           height: 20.0,
@@ -200,7 +200,7 @@ class _BankCheckoutState extends BaseCheckoutMethodState<BankCheckout> {
 
   void _validateInputs() {
     FocusScope.of(context).requestFocus(new FocusNode());
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (form.validate()) {
       form.save();
       widget.charge.account = _account;

@@ -14,14 +14,13 @@ abstract class BaseCheckoutMethodState<T extends StatefulWidget>
 
   BaseCheckoutMethodState(this.onResponse, this._method);
 
-  void handleAllError(String message, String reference, bool verify,
-      {PaymentCard card, BankAccount account}) {
+  void handleAllError(String message, String? reference, bool verify,
+      {PaymentCard? card, BankAccount? account}) {
     if (!mounted) {
       return;
     }
-    if (message == null) {
-      message = Strings.sthWentWrong;
-    }
+
+    message = Strings.sthWentWrong;
 
     onResponse(new CheckoutResponse(
         message: message,

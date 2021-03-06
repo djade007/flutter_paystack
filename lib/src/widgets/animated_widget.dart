@@ -6,7 +6,7 @@ class CustomAnimatedWidget extends StatelessWidget {
   final Widget child;
 
   CustomAnimatedWidget(
-      {@required this.child, @required AnimationController controller})
+      {required this.child, required AnimationController controller})
       : _animation = new CurvedAnimation(
           parent: controller,
           curve: Curves.fastOutSlowIn,
@@ -21,9 +21,9 @@ class CustomAnimatedWidget extends StatelessWidget {
     return new FadeTransition(
       opacity: _animation,
       child: new SlideTransition(
-        position: slideTween.animate(_animation),
+        position: slideTween.animate(_animation) as Animation<Offset>,
         child: new ScaleTransition(
-          scale: scaleTween.animate(_animation),
+          scale: scaleTween.animate(_animation) as Animation<double>,
           child: new Container(
             margin: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 0.0),
             child: new SafeArea(top: false, bottom: false, child: child),
@@ -36,7 +36,7 @@ class CustomAnimatedWidget extends StatelessWidget {
 
 abstract class BaseAnimatedState<T extends StatefulWidget> extends BaseState<T>
     with TickerProviderStateMixin {
-  AnimationController controller;
+  late AnimationController controller;
 
   @override
   void initState() {

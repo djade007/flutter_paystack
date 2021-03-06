@@ -189,7 +189,7 @@ void main() {
                 number: "4111111111111111",
                 cvc: "123",
                 expiryMonth: 09,
-                expiryYear: 2021),
+                expiryYear: DateTime.now().year + 2),
             out: true),
         Case(
             desc: "expired card",
@@ -205,7 +205,7 @@ void main() {
                 number: "6011000000000004",
                 cvc: "123",
                 expiryMonth: 09,
-                expiryYear: 20),
+                expiryYear: DateTime.now().year + 2),
             out: true),
       ];
 

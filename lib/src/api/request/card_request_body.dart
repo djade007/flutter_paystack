@@ -23,31 +23,31 @@ class CardRequestBody extends BaseRequestBody {
   static const String fieldPlan = "plan";
 
   String _clientData;
-  String _last4;
-  String _publicKey;
-  String _accessCode;
-  String _email;
+  String? _last4;
+  String? _publicKey;
+  String? _accessCode;
+  String? _email;
   String _amount;
-  String _reference;
-  String _subAccount;
-  String _transactionCharge;
-  String _bearer;
-  String _handle;
-  String _metadata;
-  String _currency;
-  String _plan;
-  Map<String, String> _additionalParameters;
+  String? _reference;
+  String? _subAccount;
+  String? _transactionCharge;
+  String? _bearer;
+  String? _handle;
+  String? _metadata;
+  String? _currency;
+  String? _plan;
+  Map<String, String?>? _additionalParameters;
 
   CardRequestBody._(Charge charge, String clientData)
       : this._clientData = clientData,
-        this._last4 = charge.card.last4Digits,
+        this._last4 = charge.card!.last4Digits,
         this._publicKey = PaystackPlugin.publicKey,
         this._email = charge.email,
         this._amount = charge.amount.toString(),
         this._reference = charge.reference,
         this._subAccount = charge.subAccount,
         this._transactionCharge =
-            charge.transactionCharge != null && charge.transactionCharge > 0
+            charge.transactionCharge != null && charge.transactionCharge! > 0
                 ? charge.transactionCharge.toString()
                 : null,
         this._bearer = charge.bearer != null ? getBearer(charge.bearer) : null,
@@ -66,8 +66,8 @@ class CardRequestBody extends BaseRequestBody {
     this._handle = await Crypto.encrypt(pin);
   }
 
-  static getBearer(Bearer bearer) {
-    String bearerStr;
+  static String? getBearer(Bearer? bearer) {
+    String? bearerStr;
     switch (bearer) {
       case Bearer.SubAccount:
         bearerStr = "subaccount";
@@ -75,14 +75,15 @@ class CardRequestBody extends BaseRequestBody {
       case Bearer.Account:
         bearerStr = "account";
         break;
+      default:
     }
     return bearerStr;
   }
 
   @override
-  Map<String, String> paramsMap() {
+  Map<String, String?> paramsMap() {
     // set values will override additional params provided
-    Map<String, String> params = _additionalParameters;
+    Map<String, String?> params = _additionalParameters!;
     params[fieldPublicKey] = _publicKey;
     params[fieldClientData] = _clientData;
     params[fieldLast4] = _last4;
@@ -92,9 +93,9 @@ class CardRequestBody extends BaseRequestBody {
     if (_email != null) {
       params[fieldEmail] = _email;
     }
-    if (_amount != null) {
-      params[fieldAmount] = _amount;
-    }
+
+    params[fieldAmount] = _amount;
+
     if (_handle != null) {
       params[fieldHandle] = _handle;
     }

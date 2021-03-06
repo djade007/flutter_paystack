@@ -12,16 +12,16 @@ import 'package:flutter_paystack/src/models/transaction.dart';
 import 'package:flutter_paystack/src/transaction/base_transaction_manager.dart';
 
 class BankTransactionManager extends BaseTransactionManager {
-  BankChargeRequestBody chargeRequestBody;
+  BankChargeRequestBody? chargeRequestBody;
   final BankServiceContract service;
 
   BankTransactionManager({
-    @required this.service,
-    @required Charge charge,
-    @required BuildContext context,
-    @required OnTransactionChange<Transaction> onSuccess,
-    @required OnTransactionError<Object, Transaction> onError,
-    @required OnTransactionChange<Transaction> beforeValidate,
+    required this.service,
+    required Charge charge,
+    required BuildContext context,
+    required OnTransactionChange<Transaction> onSuccess,
+    required OnTransactionError<Object, Transaction> onError,
+    required OnTransactionChange<Transaction> beforeValidate,
   }) : super(
           charge: charge,
           context: context,
@@ -46,13 +46,13 @@ class BankTransactionManager extends BaseTransactionManager {
   }
 
   _getTransactionId() async {
-    String id = await service.getTransactionId(chargeRequestBody.accessCode);
+    String? id = await service.getTransactionId(chargeRequestBody!.accessCode);
     if (id == null || id.isEmpty) {
       notifyProcessingError('Unable to verify access code');
       return;
     }
 
-    chargeRequestBody.transactionId = id;
+    chargeRequestBody!.transactionId = id;
     _chargeAccount();
   }
 
@@ -64,7 +64,7 @@ class BankTransactionManager extends BaseTransactionManager {
 
   void _sendTokenToServer() {
     Future<TransactionApiResponse> future = service.validateToken(
-        chargeRequestBody, chargeRequestBody.tokenParams());
+        chargeRequestBody, chargeRequestBody!.tokenParams());
     handleServerResponse(future);
   }
 
@@ -98,14 +98,14 @@ class BankTransactionManager extends BaseTransactionManager {
   }
 
   @override
-  void handleOtpInput(String token, TransactionApiResponse response) {
-    chargeRequestBody.token = token;
+  void handleOtpInput(String token, TransactionApiResponse? response) {
+    chargeRequestBody!.token = token;
     _sendTokenToServer();
   }
 
   @override
   void handleBirthdayInput(String birthday, TransactionApiResponse response) {
-    chargeRequestBody.birthday = birthday;
+    chargeRequestBody!.birthday = birthday;
     _chargeAccount();
   }
 }

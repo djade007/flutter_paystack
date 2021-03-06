@@ -25,18 +25,13 @@ abstract class BaseTransactionManager {
   final OnTransactionError<Object, Transaction> onError;
 
   BaseTransactionManager(
-      {@required this.charge,
-      @required this.context,
-      @required this.onSuccess,
-      @required this.beforeValidate,
-      @required this.onError})
-      : assert(context != null, 'context must not be null'),
-        assert(charge != null, 'charge must not be null'),
-        assert(charge.card != null,
-            'please add a card to the charge before ' 'calling chargeCard'),
-        assert(beforeValidate != null, 'beforeValidate must not be null'),
-        assert(onSuccess != null, 'onSuccess must not be null'),
-        assert(onError != null, 'onError must not be null');
+      {required this.charge,
+      required this.context,
+      required this.onSuccess,
+      required this.beforeValidate,
+      required this.onError})
+      : assert(charge.card != null,
+            'please add a card to the charge before ' 'calling chargeCard');
 
   initiate() async {
     if (BaseTransactionManager.processing) {
@@ -57,10 +52,6 @@ abstract class BaseTransactionManager {
   handleApiResponse(TransactionApiResponse apiResponse);
 
   _initApiResponse(TransactionApiResponse apiResponse) {
-    if (apiResponse == null) {
-      apiResponse = TransactionApiResponse.unknownServerResponse();
-    }
-
     transaction.loadFromResponse(apiResponse);
 
     handleApiResponse(apiResponse);
@@ -83,17 +74,15 @@ abstract class BaseTransactionManager {
   }
 
   notifyBeforeValidate() {
-    if (beforeValidate != null) {
-      beforeValidate(transaction);
-    }
+    beforeValidate(transaction);
   }
 
   setProcessingOff() => processing = false;
 
   setProcessingOn() => processing = true;
 
-  getCardInfoFrmUI(PaymentCard currentCard) async {
-    PaymentCard newCard = await showDialog<PaymentCard>(
+  getCardInfoFrmUI(PaymentCard? currentCard) async {
+    PaymentCard? newCard = await showDialog<PaymentCard>(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) => CardInputWidget(currentCard));
@@ -106,15 +95,15 @@ abstract class BaseTransactionManager {
     }
   }
 
-  getOtpFrmUI({String message, TransactionApiResponse response}) async {
+  getOtpFrmUI({String? message, TransactionApiResponse? response}) async {
     assert(message != null || response != null);
-    String otp = await showDialog<String>(
+    String? otp = await showDialog<String>(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) => new OtpWidget(
             message: message != null
                 ? message
-                : response.displayText == null || response.displayText.isEmpty
+                : response!.displayText == null || response.displayText!.isEmpty
                     ? response.message
                     : response.displayText));
 
@@ -125,9 +114,10 @@ abstract class BaseTransactionManager {
     }
   }
 
-  getAuthFrmUI(String url) async {
+  getAuthFrmUI(String? url) async {
     String result =
-        await Utils.channel.invokeMethod('getAuthorization', {"authUrl": url});
+        await (Utils.channel.invokeMethod('getAuthorization', {"authUrl": url})
+            as FutureOr<String>);
     TransactionApiResponse apiResponse;
     try {
       Map<String, dynamic> responseMap = json.decode(result);
@@ -139,7 +129,7 @@ abstract class BaseTransactionManager {
   }
 
   getPinFrmUI() async {
-    String pin = await showDialog<String>(
+    String? pin = await showDialog<String>(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) => new PinWidget());
@@ -152,12 +142,12 @@ abstract class BaseTransactionManager {
   }
 
   getBirthdayFrmUI(TransactionApiResponse response) async {
-    String birthday = await showDialog<String>(
+    String? birthday = await showDialog<String>(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) => new BirthdayWidget(
             message:
-                response.displayText == null || response.displayText.isEmpty
+                response.displayText == null || response.displayText!.isEmpty
                     ? response.message
                     : response.displayText));
 
@@ -170,7 +160,7 @@ abstract class BaseTransactionManager {
 
   void handleCardInput() {}
 
-  void handleOtpInput(String otp, TransactionApiResponse response);
+  void handleOtpInput(String otp, TransactionApiResponse? response);
 
   void handlePinInput(String pin) {}
 

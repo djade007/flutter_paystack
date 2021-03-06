@@ -8,11 +8,11 @@ import 'package:flutter_paystack/src/widgets/input/base_field.dart';
 
 class NumberField extends BaseTextField {
   NumberField(
-      {Key key,
-      @required PaymentCard card,
-      @required TextEditingController controller,
-      @required FormFieldSetter<String> onSaved,
-      @required Widget suffix})
+      {Key? key,
+      required PaymentCard? card,
+      required TextEditingController? controller,
+      required FormFieldSetter<String> onSaved,
+      required Widget suffix})
       : super(
           key: key,
           labelText: 'CARD NUMBER',
@@ -20,21 +20,21 @@ class NumberField extends BaseTextField {
           controller: controller,
           onSaved: onSaved,
           suffix: suffix,
-          validator: (String value) => validateCardNum(value, card),
+          validator: (value) => validateCardNum(value!, card),
           inputFormatters: [
-            WhitelistingTextInputFormatter.digitsOnly,
-            new LengthLimitingTextInputFormatter(19),
-            new CardNumberInputFormatter()
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(19),
+            CardNumberInputFormatter()
           ],
         );
 
-  static String validateCardNum(String input, PaymentCard card) {
+  static String? validateCardNum(String input, PaymentCard? card) {
     if (input.isEmpty) {
       return Strings.invalidNumber;
     }
 
     input = CardUtils.getCleanedNumber(input);
 
-    return card.validNumber(input) ? null : Strings.invalidNumber;
+    return card!.validNumber(input) ? null : Strings.invalidNumber;
   }
 }

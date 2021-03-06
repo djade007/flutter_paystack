@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter_paystack/src/common/platform_info.dart';
 
 mixin BaseApiService {
-  final Map<String, String> headers = {
+  final Map<String, String?> headers = {
     HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     HttpHeaders.userAgentHeader: PlatformInfo().userAgent,
     HttpHeaders.acceptHeader: 'application/json',

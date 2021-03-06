@@ -11,11 +11,11 @@ import 'package:http/http.dart' as http;
 
 class CardService with BaseApiService implements CardServiceContract {
   @override
-  Future<TransactionApiResponse> chargeCard(Map<String, String> fields) async {
+  Future<TransactionApiResponse> chargeCard(Map<String, String?> fields) async {
     var url = '$baseUrl/charge/mobile_charge';
 
-    http.Response response =
-        await http.post(Uri.parse(url), body: fields, headers: headers);
+    http.Response response = await http.post(Uri.parse(url),
+        body: fields, headers: headers as Map<String, String>?);
     var body = response.body;
 
     var statusCode = response.statusCode;
@@ -24,23 +24,22 @@ class CardService with BaseApiService implements CardServiceContract {
       case HttpStatus.ok:
         Map<String, dynamic> responseBody = json.decode(body);
         return TransactionApiResponse.fromMap(responseBody);
-        break;
+
       case HttpStatus.gatewayTimeout:
         throw ChargeException('Gateway timeout error');
-        break;
+
       default:
         throw ChargeException(Strings.unKnownResponse);
-        break;
     }
   }
 
   @override
   Future<TransactionApiResponse> validateCharge(
-      Map<String, String> fields) async {
+      Map<String, String?> fields) async {
     var url = '$baseUrl/charge/validate';
 
-    http.Response response =
-        await http.post(Uri.parse(url), body: fields, headers: headers);
+    http.Response response = await http.post(Uri.parse(url),
+        body: fields, headers: headers as Map<String, String>?);
     var body = response.body;
 
     var statusCode = response.statusCode;
@@ -53,10 +52,11 @@ class CardService with BaseApiService implements CardServiceContract {
     }
   }
 
-  Future<TransactionApiResponse> reQueryTransaction(String trans) async {
+  Future<TransactionApiResponse> reQueryTransaction(String? trans) async {
     var url = '$baseUrl/requery/$trans';
 
-    http.Response response = await http.get(Uri.parse(url), headers: headers);
+    http.Response response = await http.get(Uri.parse(url),
+        headers: headers as Map<String, String>?);
     var body = response.body;
     var statusCode = response.statusCode;
     if (statusCode == HttpStatus.ok) {

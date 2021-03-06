@@ -2,36 +2,35 @@ import 'package:flutter_paystack/src/common/my_strings.dart';
 import 'package:flutter_paystack/src/common/paystack.dart';
 import 'package:flutter_paystack/src/models/bank.dart';
 import 'package:flutter_paystack/src/models/card.dart';
-import 'package:meta/meta.dart';
 
 class CheckoutResponse {
   /// A user readable message. If the transaction was not successful, this returns the
   /// cause of the error.
-  String message;
+  String? message;
 
   /// The card used for the payment. Will return null if the customer didn't use card
   /// payment
-  PaymentCard card;
+  PaymentCard? card;
 
   /// The bank account used for the payment. Will return null if the customer didn't use
   /// bank account as a means of  payment
-  BankAccount account;
+  BankAccount? account;
 
   /// Transaction reference. Might return null for failed transaction transactions
-  String reference;
+  String? reference;
 
   /// The status of the transaction. A successful response returns true and false
   /// otherwise
-  bool status;
+  bool? status;
 
   /// The means of payment. It may return [CheckoutMethod.bank] or [CheckoutMethod.card]
-  CheckoutMethod method;
+  CheckoutMethod? method;
 
   /// If the transaction should be verified. See https://developers.paystack.co/v2.0/reference#verify-transaction.
   /// This is usually false for transactions that didn't reach Paystack before terminating
   ///
   /// It might return true regardless whether a transaction fails or not.
-  bool verify;
+  bool? verify;
 
   CheckoutResponse.defaults() {
     message = Strings.userTerminated;
@@ -44,11 +43,11 @@ class CheckoutResponse {
   }
 
   CheckoutResponse(
-      {@required this.message,
-      @required this.reference,
-      @required this.status,
-      @required this.method,
-      @required this.verify,
+      {required this.message,
+      required this.reference,
+      required this.status,
+      required this.method,
+      required this.verify,
       this.card,
       this.account})
       : assert(card != null || account != null);

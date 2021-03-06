@@ -54,14 +54,17 @@ void main() {
     });
 
     group("#hasYearPassed", () {
+      final nextYear = DateTime.now().year + 1;
+      final yearLast2 = int.parse(nextYear.toString().substring(2));
+
       final cases = [
         Case(inp: 10, out: true),
         Case(inp: 100, out: true),
         Case(inp: 1000, out: true),
-        Case(inp: 20, out: false),
+        Case(inp: yearLast2, out: false),
         Case(inp: 2000, out: true),
         Case(inp: 94, out: false),
-        Case(inp: 2020, out: false),
+        Case(inp: nextYear, out: false),
         Case(inp: 87656776, out: false),
         Case(inp: 8, out: true),
         Case(inp: 0, out: true),

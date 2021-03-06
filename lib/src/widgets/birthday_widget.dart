@@ -10,9 +10,9 @@ import 'package:intl/intl.dart';
 const double _kPickerSheetHeight = 216.0;
 
 class BirthdayWidget extends StatefulWidget {
-  final String message;
+  final String? message;
 
-  BirthdayWidget({@required this.message});
+  BirthdayWidget({required this.message});
 
   @override
   _BirthdayWidgetState createState() => _BirthdayWidgetState();
@@ -20,7 +20,7 @@ class BirthdayWidget extends StatefulWidget {
 
 class _BirthdayWidgetState extends BaseState<BirthdayWidget> {
   var _heightBox = const SizedBox(height: 20.0);
-  DateTime _pickedDate;
+  DateTime? _pickedDate;
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _BirthdayWidgetState extends BaseState<BirthdayWidget> {
                 width: 30.0, package: 'flutter_paystack'),
             _heightBox,
             new Text(
-              widget.message,
+              widget.message!,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontWeight: FontWeight.w500,
@@ -124,7 +124,7 @@ class _BirthdayWidgetState extends BaseState<BirthdayWidget> {
                 ),
               ));
     } else {
-      DateTime result = await showDatePicker(
+      DateTime? result = await showDatePicker(
           context: context,
           selectableDayPredicate: (DateTime val) =>
               val.year > now.year && val.month > now.month && val.day > now.day
@@ -163,19 +163,19 @@ class _BirthdayWidgetState extends BaseState<BirthdayWidget> {
   }
 
   String _getMonth() {
-    return new DateFormat('MMMM').format(_pickedDate);
+    return new DateFormat('MMMM').format(_pickedDate!);
   }
 
   String _getDay() {
-    return new DateFormat('dd').format(_pickedDate);
+    return new DateFormat('dd').format(_pickedDate!);
   }
 
   String _getYear() {
-    return new DateFormat('yyyy').format(_pickedDate);
+    return new DateFormat('yyyy').format(_pickedDate!);
   }
 
   void _onAuthorize() {
-    String date = new DateFormat('yyyy-MM-dd').format(_pickedDate);
+    String date = new DateFormat('yyyy-MM-dd').format(_pickedDate!);
     Navigator.of(context).pop(date);
   }
 }

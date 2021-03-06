@@ -17,17 +17,17 @@ class CardCheckout extends StatefulWidget {
   final Charge charge;
   final OnResponse<CheckoutResponse> onResponse;
   final ValueChanged<bool> onProcessingChange;
-  final ValueChanged<PaymentCard> onCardChange;
-  final bool hideAmount;
+  final ValueChanged<PaymentCard?> onCardChange;
+  final bool? hideAmount;
   final CardServiceContract service;
 
   CardCheckout({
-    Key key,
-    @required this.charge,
-    @required this.onResponse,
-    @required this.onProcessingChange,
-    @required this.onCardChange,
-    @required this.service,
+    Key? key,
+    required this.charge,
+    required this.onResponse,
+    required this.onProcessingChange,
+    required this.onCardChange,
+    required this.service,
     this.hideAmount = false,
   }) : super(key: key);
 
@@ -43,9 +43,8 @@ class _CardCheckoutState extends BaseCheckoutMethodState<CardCheckout> {
 
   @override
   Widget buildAnimatedChild() {
-    var amountText = _charge.amount == null || _charge.amount.isNegative
-        ? ''
-        : Utils.formatAmount(_charge.amount);
+    var amountText =
+        _charge.amount.isNegative ? '' : Utils.formatAmount(_charge.amount);
 
     return new Container(
       alignment: Alignment.center,
@@ -61,7 +60,7 @@ class _CardCheckoutState extends BaseCheckoutMethodState<CardCheckout> {
           ),
           new CardInput(
             key: Key("CardInput"),
-            buttonText: widget.hideAmount ? "Continue" : 'Pay $amountText',
+            buttonText: widget.hideAmount! ? "Continue" : 'Pay $amountText',
             card: _charge.card,
             onValidated: _onCardValidated,
           ),
@@ -70,13 +69,13 @@ class _CardCheckoutState extends BaseCheckoutMethodState<CardCheckout> {
     );
   }
 
-  void _onCardValidated(PaymentCard card) {
+  void _onCardValidated(PaymentCard? card) {
     _charge.card = card;
     widget.onCardChange(_charge.card);
     widget.onProcessingChange(true);
 
-    if ((_charge.accessCode != null && _charge.accessCode.isNotEmpty) ||
-        _charge.reference != null && _charge.reference.isNotEmpty) {
+    if ((_charge.accessCode != null && _charge.accessCode!.isNotEmpty) ||
+        _charge.reference != null && _charge.reference!.isNotEmpty) {
       _chargeCard(_charge);
     } else {
       // This should never happen. Validation has already been done in [PaystackPlugin .checkout]
@@ -130,7 +129,7 @@ class _CardCheckoutState extends BaseCheckoutMethodState<CardCheckout> {
         .chargeCard();
   }
 
-  void handleError(String message, String reference, bool verify) {
+  void handleError(String message, String? reference, bool verify) {
     handleAllError(message, reference, verify, card: _charge.card);
   }
 }
